@@ -1,0 +1,17 @@
+[package]
+name = "rust_image_compress"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+flutter_rust_bridge = "=2.10.0"
+image = "0.25.6"
+serde = { version = "1.0.219", features = ["derive"] }
+sysinfo = "0.35.1"
+rayon = "1.10.0"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
