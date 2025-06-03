@@ -13,8 +13,8 @@
 
 
 Install Flutter dependencies:
-```bash
-flutter pub get
+```yarm
+rust_image_compress: ^0.0.2
 ```
 
 ## Usage

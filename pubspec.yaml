@@ -1,6 +1,6 @@
 name: rust_image_compress
 description: "Rust image compress plugin"
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/Chihiro-bit/rust_image_compress.git
 repository: https://github.com/Chihiro-bit/rust_image_compress.git
 
