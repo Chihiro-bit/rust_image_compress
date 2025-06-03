@@ -1,92 +1,141 @@
-# rust_image_compress
+# Flutter + Rust Image Compression Toolkit
 
-A new Flutter FFI plugin project.
+### Please note that this is only a test version and is not recommended for use in production environments
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter
-[FFI plugin](https://flutter.dev/to/ffi-package),
-a specialized package that includes native code directly invoked with Dart FFI.
+- ⚡ **Multi-threaded batch processing** with dynamic thread pooling
+- 📊 **Resource-aware scheduling** based on available memory and CPU cores
+- 🔄 **Automatic error recovery** for corrupted image files
+- 📈 **Detailed analytics** with compression ratios and space savings
+- 🌐 **Cross-platform support** (Android, iOS, Windows, Linux, macOS)
 
-## Project structure
 
-This template uses the following structure:
 
-* `src`: Contains the native source code, and a CmakeFile.txt file for building
-  that source code into a dynamic library.
-
-* `lib`: Contains the Dart code that defines the API of the plugin, and which
-  calls into the native code using `dart:ffi`.
-
-* platform folders (`android`, `ios`, `windows`, etc.): Contains the build files
-  for building and bundling the native code library with the platform application.
-
-## Building and bundling native code
-
-The `pubspec.yaml` specifies FFI plugins as follows:
-
-```yaml
-  plugin:
-    platforms:
-      some_platform:
-        ffiPlugin: true
+Install Flutter dependencies:
+```bash
+flutter pub get
 ```
 
-This configuration invokes the native build for the various target platforms
-and bundles the binaries in Flutter applications using these FFI plugins.
+## Usage
 
-This can be combined with dartPluginClass, such as when FFI is used for the
-implementation of one platform in a federated plugin:
+### Basic Compression
 
-```yaml
-  plugin:
-    implements: some_other_plugin
-    platforms:
-      some_platform:
-        dartPluginClass: SomeClass
-        ffiPlugin: true
+```dart
+import 'package:image_compressor/api.dart';
+
+void compressSingleImage() async {
+  final file = File('/path/to/image.jpg');
+  
+  final result = await compressSingle(
+    filePath: file.path,
+    quality: 75,
+    format: 'jpeg'
+  );
+
+  print('''
+  Compression Result:
+  Original: ${result.originalSize} bytes
+  Compressed: ${result.compressedSize} bytes
+  Saved: ${result.originalSize - result.compressedSize} bytes
+  ''');
+}
 ```
 
-A plugin can have both FFI and method channels:
+### Batch Processing
 
-```yaml
-  plugin:
-    platforms:
-      some_platform:
-        pluginClass: SomeName
-        ffiPlugin: true
+```dart
+void processImageBatch() async {
+  final images = [
+    File('/path/to/image1.jpg'),
+    File('/path/to/image2.png'),
+    File('/path/to/image3.heic'),
+  ];
+
+  final results = await compressBatch(
+    filePaths: images.map((f) => f.path).toList(),
+    quality: 70,
+    format: 'jpeg'
+  );
+
+  for (final r in results) {
+    if (r.isSuccessful) {
+      print('Compressed ${r.result!.originalPath}');
+    } else {
+      print('Error: ${r.error}');
+    }
+  }
+}
 ```
 
-The native build systems that are invoked by FFI (and method channel) plugins are:
+### Custom Configuration
 
-* For Android: Gradle, which invokes the Android NDK for native builds.
-  * See the documentation in android/build.gradle.
-* For iOS and MacOS: Xcode, via CocoaPods.
-  * See the documentation in ios/rust_image_compress.podspec.
-  * See the documentation in macos/rust_image_compress.podspec.
-* For Linux and Windows: CMake.
-  * See the documentation in linux/CMakeLists.txt.
-  * See the documentation in windows/CMakeLists.txt.
+```dart
+CompressionConfig config = CompressionConfig(
+  quality: 85,          // 0-100 (higher = better quality)
+  targetSizeKb: 500,     // Optional target file size
+  format: ImageFormat.jpg,
+  adaptiveSampling: true // Enable smart downscaling
+);
+```
 
-## Binding to native code
+## System Architecture
 
-To use the native code, bindings in Dart are needed.
-To avoid writing these by hand, they are generated from the header file
-(`src/rust_image_compress.h`) by `package:ffigen`.
-Regenerate the bindings by running `dart run ffigen --config ffigen.yaml`.
+```mermaid
+graph LR
+  A[Flutter UI] --> B[FFI Binding]
+  B --> C[Rust Core]
+  C --> D[Image Decoding]
+  C --> E[Parallel Processing]
+  C --> F[Format Conversion]
+  D --> G[Error Recovery]
+  E --> H[Resource Monitor]
+  F --> I[Quality Optimization]
+  G --> J[Byte-level Repair]
+  H --> K[Dynamic Thread Allocation]
+```
 
-## Invoking native code
+### Memory Optimization
 
-Very short-running native functions can be directly invoked from any isolate.
-For example, see `sum` in `lib/rust_image_compress.dart`.
+For low-memory devices, add to `AndroidManifest.xml`:
+```xml
+<application
+  android:largeHeap="true"
+  android:hardwareAccelerated="false">
+```
 
-Longer-running functions should be invoked on a helper isolate to avoid
-dropping frames in Flutter applications.
-For example, see `sumAsync` in `lib/rust_image_compress.dart`.
+## License
 
-## Flutter help
+```text
+MIT License
 
-For help getting started with Flutter, view our
-[online documentation](https://docs.flutter.dev), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Copyright (c) 2023 Your Name
 
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+## Roadmap
+
+- [x] Baseline JPEG/PNG compression
+- [x] Dynamic resource allocation
+- [ ] WebP/AVIF format support (Q3 2023)
+- [ ] AI-based compression (Q4 2023)
+- [ ] Video compression pipeline (2024)
+
+---

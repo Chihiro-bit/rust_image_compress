@@ -1,7 +1,9 @@
 name: rust_image_compress
-description: "A new Flutter FFI plugin project."
-version: 0.0.1
-homepage:
+description: "Rust image compress plugin"
+version: 0.0.2
+homepage: https://github.com/Chihiro-bit/rust_image_compress.git
+repository: https://github.com/Chihiro-bit/rust_image_compress.git
+
 
 environment:
   sdk: ^3.8.1
