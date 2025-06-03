@@ -134,8 +134,8 @@ SOFTWARE.
 
 - [x] Baseline JPEG/PNG compression
 - [x] Dynamic resource allocation
-- [ ] WebP/AVIF format support (Q3 2023)
-- [ ] AI-based compression (Q4 2023)
-- [ ] Video compression pipeline (2024)
+- [ ] WebP/AVIF format support (Q3 2025)
+- [ ] AI-based compression (Q4 2025)
+- [ ] Video compression pipeline (2025)
 
 ---
